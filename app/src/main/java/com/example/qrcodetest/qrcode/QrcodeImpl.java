@@ -2,6 +2,7 @@ package com.example.qrcodetest.qrcode;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -28,7 +29,7 @@ import java.util.Locale;
 
 public class QrcodeImpl {
     private static final String TAG = "QrcodeImpl";
-    private static final String fileName = "_SAVE.txt";
+    private static final String fileName = "_QrData.txt";
 
     private final Activity mainActivity;
     private final IntentIntegrator obj;
@@ -37,7 +38,7 @@ public class QrcodeImpl {
 
     /**
      * 생성자
-     * @param activity
+     * @param activity context
      */
     public QrcodeImpl(Activity activity){
         obj = new IntentIntegrator(activity);
@@ -92,29 +93,27 @@ public class QrcodeImpl {
             public void onClick(View v) {
                 Iterator<? extends Object> it = getDataList(QrcodeConstants.DATALIST_CONTENT).iterator();
                 final String sFileName = getToday()+fileName;
-                File file = new File(mainActivity.getFilesDir(), sFileName);
+                // 앱 내부전용 파일
+//              File file = new File(mainActivity.getFilesDir(), sFileName);
+
+                // 앱 공용저장공간 파일
+                File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), sFileName);
+
                 Toast errToast = Toast.makeText(mainActivity,"저장중 에러가 발생하여 저장에 실패했습니다.",Toast.LENGTH_SHORT);
                 Toast suuToast = Toast.makeText(mainActivity,"저장에 성공하였습니다. 파일명 ["+sFileName+"]",Toast.LENGTH_SHORT);
-
-                Log.i(TAG, "파일명 : "+sFileName);
-                Log.i(TAG, "경로 : "+mainActivity.getFilesDir());
 
                 try {
                     FileWriter fileWriter = new FileWriter(file);
                     BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
 
-                    if(!file.exists()){
-                        Log.i(TAG,"폴더를 생성합니다.");
-                        file.mkdir();
-                    }
+//                    if(!file.isDirectory()){
+//                        Log.i(TAG,"폴더를 생성합니다.");
+//                        file.mkdir();
+//                    }
 
                     while (it.hasNext()) {
                         String content =  (String)it.next();
-
-                        if(content == null || content.equals("")){
-                            continue;
-                        }
-                        bufferedWriter.write(content);
+                        bufferedWriter.write(content == null ? "" : content);
                     }
 
                     if(fileWriter == null || bufferedWriter == null){
@@ -133,7 +132,7 @@ public class QrcodeImpl {
                     e.printStackTrace();
                 }
                 // TEST 진짜 파일이 있는지 체크
-                // 안드로이드 최근버젼은 그냥 휴대폰 연결한다고 해서 파일을 찾아 볼 수 없음.
+                // 안드로이드 최근버젼은 그냥 휴대폰 연결한다고 해서 파일을 찾아 볼 수 없음. (안슈쓰면 가능은 함... shift 2 -> Device...)
                 //
 //                try{
 //                    File sFile = new File(mainActivity.getFilesDir(),sFileName);

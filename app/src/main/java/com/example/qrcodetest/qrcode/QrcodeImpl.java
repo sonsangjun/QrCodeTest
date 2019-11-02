@@ -3,7 +3,6 @@ package com.example.qrcodetest.qrcode;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Environment;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -15,10 +14,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.qrcodetest.R;
 import com.google.zxing.integration.android.IntentIntegrator;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -28,8 +25,9 @@ import java.util.List;
 import java.util.Locale;
 
 public class QrcodeImpl {
-    private static final String TAG = "QrcodeImpl";
+//    private static final String TAG = "QrcodeImpl";
     private static final String fileName = "_QrData.txt";
+    private static final String fileDir = Environment.DIRECTORY_DOWNLOADS;
 
     private final Activity mainActivity;
     private final IntentIntegrator obj;
@@ -97,10 +95,10 @@ public class QrcodeImpl {
 //              File file = new File(mainActivity.getFilesDir(), sFileName);
 
                 // 앱 공용저장공간 파일
-                File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), sFileName);
+                File file = new File(Environment.getExternalStoragePublicDirectory(fileDir), sFileName);
 
                 Toast errToast = Toast.makeText(mainActivity,"저장중 에러가 발생하여 저장에 실패했습니다.",Toast.LENGTH_SHORT);
-                Toast suuToast = Toast.makeText(mainActivity,"저장에 성공하였습니다. 파일명 ["+sFileName+"]",Toast.LENGTH_SHORT);
+                Toast suuToast = Toast.makeText(mainActivity,"저장에 성공하였습니다. \n경로 : ["+fileDir+"]\n파일명 ["+sFileName+"]",Toast.LENGTH_SHORT);
 
                 try {
                     FileWriter fileWriter = new FileWriter(file);

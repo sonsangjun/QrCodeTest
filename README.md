@@ -80,7 +80,7 @@ https://snowdeer.github.io/android/2017/08/16/android-on-save-instance-state/
 	
 	
 
-[Git에 반영]
+[Git에 반영]  
 …or create a new repository on the command line  
 echo "# QrCodeTest" >> README.md  
 git init  

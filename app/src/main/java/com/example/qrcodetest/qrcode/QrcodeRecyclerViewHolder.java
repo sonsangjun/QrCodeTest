@@ -20,7 +20,7 @@ public class QrcodeRecyclerViewHolder extends RecyclerView.ViewHolder {
         qrcodeByte = itemView.findViewById(R.id.qrcodeByte);
     }
 
-    public void setTextView(int index, String content, String qrcodeByte){
+    public void setTextView(final int index, final String content, final String qrcodeByte){
         this.content.setText(content);
         this.index.setText(String.valueOf(index));
         this.qrcodeByte.setText(qrcodeByte);

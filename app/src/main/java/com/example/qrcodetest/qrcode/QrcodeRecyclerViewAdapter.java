@@ -64,7 +64,7 @@ public class QrcodeRecyclerViewAdapter extends RecyclerView.Adapter{
      * DataList에 데이터 한건 추가
      * @param qrcodeInfo
      */
-    public void setDataElement(QrcodeInfo qrcodeInfo){
+    public void setDataElement(final QrcodeInfo qrcodeInfo){
         dataList.add(qrcodeInfo);
         notifyDataSetChanged();;
     }
@@ -82,7 +82,7 @@ public class QrcodeRecyclerViewAdapter extends RecyclerView.Adapter{
      * @param flag
      * @return
      */
-    public List<? extends Object> getDataList(String flag){
+    public List<? extends Object> getDataList(final String flag){
         String sFlag = (flag == null ? "" : flag);
 
         if(sFlag.equals(QrcodeConstants.DATALIST_ID)){
@@ -122,7 +122,7 @@ public class QrcodeRecyclerViewAdapter extends RecyclerView.Adapter{
      * @param idxList
      * @param contentList
      */
-    public void setDataList(List<Integer> idxList, List<String> contentList){
+    public void setDataList(final List<Integer> idxList, final List<String> contentList){
         Log.i(TAG,"==================== Size : idxList "+idxList.size()+", contentList "+contentList.size());
 
         dataList.clear();
@@ -142,7 +142,7 @@ public class QrcodeRecyclerViewAdapter extends RecyclerView.Adapter{
      * (외부) textViewIdx 설정
      * @param textViewIdx
      */
-    public void setTextViewIdx(int textViewIdx){
+    public void setTextViewIdx(final int textViewIdx){
         this.textViewIdx = textViewIdx;
     }
 
@@ -171,7 +171,7 @@ public class QrcodeRecyclerViewAdapter extends RecyclerView.Adapter{
      * @param bigDecimal
      * @return
      */
-    public String castByteToBigByte(BigDecimal bigDecimal){
+    public String castByteToBigByte(final BigDecimal bigDecimal){
         BigDecimal Byte_1024 = new BigDecimal(1024);
         BigDecimal rstValue = new BigDecimal(bigDecimal.toString());
         int castDep = QrcodeConstants.CAST_BYTE;
@@ -198,7 +198,7 @@ public class QrcodeRecyclerViewAdapter extends RecyclerView.Adapter{
      * @param data
      * @return
      */
-    public void prcsResult(int requestCode, int resultCode, Intent data){
+    public void prcsResult(final int requestCode, final int resultCode, Intent data){
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
         if(result == null || result.getContents() == null) {
             return ;
@@ -225,7 +225,7 @@ public class QrcodeRecyclerViewAdapter extends RecyclerView.Adapter{
      * @param toPosition
      * @return
      */
-    public boolean onItemMove(int fromPosition, int toPosition){
+    public boolean onItemMove(final int fromPosition, final int toPosition){
         Log.i(TAG,"onItemMove : fromPos "+fromPosition+"\t toPos "+toPosition+"\tdataList.size "+getItemCount()+"\t "+getDataListWithString());
 
         if(dataList.size() < 1){
@@ -242,7 +242,7 @@ public class QrcodeRecyclerViewAdapter extends RecyclerView.Adapter{
      * 스와이프를 통한 아이템 삭제
      * @param position
      */
-    public void onSwipeDelete(int position){
+    public void onSwipeDelete(final int position){
         Log.i(TAG,"onSwipeDelete : pos "+position+"\tdataList.size "+getItemCount()+"\t "+getDataListWithString());
         if(dataList.size() < 1){
             notifyDataSetChanged();

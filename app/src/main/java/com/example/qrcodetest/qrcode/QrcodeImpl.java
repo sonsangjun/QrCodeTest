@@ -190,7 +190,7 @@ public class QrcodeImpl {
      * @param flag
      * @return
      */
-    public List<? extends Object> getDataList(String flag){
+    public List<? extends Object> getDataList(final String flag){
         return resultViewAdapter.getDataList(flag);
     }
 

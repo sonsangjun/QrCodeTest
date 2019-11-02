@@ -182,9 +182,10 @@ public class QrcodeRecyclerViewAdapter extends RecyclerView.Adapter{
         }
 
         switch (castDep){
+            case QrcodeConstants.CAST_BYTE : return (rstValue.toString() + " Byte");
             case QrcodeConstants.CAST_KBYTE : return (rstValue.toString() + " KByte");
             case QrcodeConstants.CAST_MBYTE : return (rstValue.toString() + " MByte");
-            default : return (rstValue.toString() + " Byte");
+            default : return (bigDecimal.toString() + " Byte");
         }
     }
 

@@ -162,6 +162,7 @@ public class QrcodeImpl {
             @Override
             public void onClick(View v) {
                 resultViewAdapter.resetDataList();
+                resultViewAdapter.updateTotView();
                 Toast.makeText(mainActivity,"데이터 목록이 초기화 되었습니다.",Toast.LENGTH_SHORT).show();
             }
         };

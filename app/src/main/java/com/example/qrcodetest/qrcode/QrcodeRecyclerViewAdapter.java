@@ -1,11 +1,13 @@
 package com.example.qrcodetest.qrcode;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -14,6 +16,7 @@ import com.example.qrcodetest.R;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
+import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -25,6 +28,8 @@ import java.util.List;
 public class QrcodeRecyclerViewAdapter extends RecyclerView.Adapter{
     private static final String TAG = "QrcodeImpl";
     private Context context;
+    private final TextView totByteView;
+    private final TextView totCntView;
 
     private List<QrcodeInfo> dataList;
     private int textViewIdx = 0;
@@ -32,6 +37,8 @@ public class QrcodeRecyclerViewAdapter extends RecyclerView.Adapter{
     public QrcodeRecyclerViewAdapter(@NonNull Context context){
         dataList = new LinkedList<>();
         this.context = context;
+        totByteView = ((Activity)context).findViewById(R.id.totLengthView);
+        totCntView = ((Activity)context).findViewById(R.id.totCntView);
     }
 
     /***********************************************************************************************/
@@ -139,6 +146,47 @@ public class QrcodeRecyclerViewAdapter extends RecyclerView.Adapter{
         this.textViewIdx = textViewIdx;
     }
 
+    /**
+     * DataList의 총 String 크기(단위 : Byte)
+     */
+    public BigDecimal getDataListTotStrByte(){
+        Iterator<QrcodeInfo> it = this.dataList.iterator();
+        BigDecimal totByte = new BigDecimal(0);
+        while(it.hasNext()){
+            QrcodeInfo qrcodeInfo = it.next();
+            String str = qrcodeInfo.getContent();
+            if(str==null) {
+                continue;
+            }
+
+            totByte = totByte.add(new BigDecimal(str.getBytes().length));
+        }
+
+        return totByte;
+    }
+
+    /**
+     * 크기 단위 변환 ( param값은 byte )
+     * (1024단위로 B => K => M)
+     * @param bigDecimal
+     * @return
+     */
+    public String castByteToBigByte(BigDecimal bigDecimal){
+        BigDecimal Byte_1024 = new BigDecimal(1024);
+        BigDecimal rstValue = new BigDecimal(bigDecimal.toString());
+        int castDep = QrcodeConstants.CAST_BYTE;
+
+        while(rstValue.compareTo(Byte_1024) > 0){
+            rstValue = bigDecimal.divide(Byte_1024,1,BigDecimal.ROUND_HALF_DOWN);
+            castDep++;
+        }
+
+        switch (castDep){
+            case QrcodeConstants.CAST_KBYTE : return (rstValue.toString() + " KByte");
+            case QrcodeConstants.CAST_MBYTE : return (rstValue.toString() + " MByte");
+            default : return (rstValue.toString() + " Byte");
+        }
+    }
 
     /***********************************************************************************************/
     /** 이벤트 정의 메소드 */
@@ -157,10 +205,18 @@ public class QrcodeRecyclerViewAdapter extends RecyclerView.Adapter{
         }
 
         QrcodeInfo qrcodeInfo = new QrcodeInfo();
-
         qrcodeInfo.setIndex(this.textViewIdx++);
         qrcodeInfo.setContent(result.getContents());
         setDataElement(qrcodeInfo);
+        updateTotView();
+    }
+
+    /**
+     * TotTextView에 출력되는 정보를 업데이트 한다.
+     */
+    public void updateTotView(){
+        totByteView.setText(String.format("총 %s ", castByteToBigByte(getDataListTotStrByte())));
+        totCntView.setText(String.format("총 %s 건",this.dataList.size()));
     }
 
     /**
@@ -171,15 +227,6 @@ public class QrcodeRecyclerViewAdapter extends RecyclerView.Adapter{
      */
     public boolean onItemMove(int fromPosition, int toPosition){
         Log.i(TAG,"onItemMove : fromPos "+fromPosition+"\t toPos "+toPosition+"\tdataList.size "+getItemCount()+"\t "+getDataListWithString());
-//        if (fromPosition < toPosition) {
-//            for (int i = fromPosition; i < toPosition; i++) {
-//                Collections.swap(dataList, i, i + 1);
-//            }
-//        } else {
-//            for (int i = fromPosition; i > toPosition; i--) {
-//                Collections.swap(dataList, i, i - 1);
-//            }
-//        }
 
         if(dataList.size() < 1){
             notifyDataSetChanged();
@@ -201,10 +248,11 @@ public class QrcodeRecyclerViewAdapter extends RecyclerView.Adapter{
             notifyDataSetChanged();
             return;
         }
+
         dataList.remove(position);
+        updateTotView();
         notifyItemRemoved(position);
     }
-
 
     /***********************************************************************************************/
     /** 필수 구현 메소드 */
@@ -220,7 +268,12 @@ public class QrcodeRecyclerViewAdapter extends RecyclerView.Adapter{
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         QrcodeInfo qrcodeInfo = this.dataList.get(position);
         QrcodeRecyclerViewHolder viewHolder = (QrcodeRecyclerViewHolder)holder;
-        viewHolder.setTextView(qrcodeInfo.getIndex(), qrcodeInfo.getContent());
+
+        int index = qrcodeInfo.getIndex();
+        String content = qrcodeInfo.getContent();
+        String codeByteSize = (content == null ? "0" : castByteToBigByte(new BigDecimal(content.getBytes().length)));
+
+        viewHolder.setTextView(index , content, codeByteSize);
     }
 
     @Override

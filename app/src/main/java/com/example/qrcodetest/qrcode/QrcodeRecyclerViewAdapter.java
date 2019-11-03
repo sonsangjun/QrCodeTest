@@ -168,16 +168,16 @@ public class QrcodeRecyclerViewAdapter extends RecyclerView.Adapter{
     /**
      * 크기 단위 변환 ( param값은 byte )
      * (1024단위로 B => K => M)
-     * @param bigDecimal
+     * @param src
      * @return
      */
-    public String castByteToBigByte(final BigDecimal bigDecimal){
+    public String castByteToBigByte(final BigDecimal src){
         BigDecimal Byte_1024 = new BigDecimal(1024);
-        BigDecimal rstValue = new BigDecimal(bigDecimal.toString());
+        BigDecimal rstValue = new BigDecimal(src.toString());
         int castDep = QrcodeConstants.CAST_BYTE;
 
         while(rstValue.compareTo(Byte_1024) > 0){
-            rstValue = bigDecimal.divide(Byte_1024,1,BigDecimal.ROUND_HALF_DOWN);
+            rstValue = src.divide(Byte_1024,1,BigDecimal.ROUND_HALF_DOWN);
             castDep++;
         }
 
@@ -185,7 +185,7 @@ public class QrcodeRecyclerViewAdapter extends RecyclerView.Adapter{
             case QrcodeConstants.CAST_BYTE : return (rstValue.toString() + " Byte");
             case QrcodeConstants.CAST_KBYTE : return (rstValue.toString() + " KByte");
             case QrcodeConstants.CAST_MBYTE : return (rstValue.toString() + " MByte");
-            default : return (bigDecimal.toString() + " Byte");
+            default : return (src.toString() + " Byte");
         }
     }
 
